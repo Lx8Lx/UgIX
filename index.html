@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>UgIx - أقوى موقع بالعالم</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- مكتبة ثلاثية الأبعاد Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- مكتبة التحريك GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
   <style>
-    /* RESET */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      user-select: none;
       font-family: "Arial", sans-serif;
     }
     body {
@@ -17,29 +22,29 @@
       background: #000;
     }
 
-    /* شاشة التحميل */
+    /* شاشة تحميل */
     #preloader {
       position: fixed;
       width: 100%;
       height: 100vh;
-      background: #000;
+      background: linear-gradient(135deg, #000, #4b0082);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       color: #fff;
-      z-index: 9999;
-      transition: opacity 0.5s ease-out, visibility 0s linear 0.5s;
+      z-index: 99999;
     }
     #preloader h1 {
-      font-size: 24px;
+      font-size: 26px;
       margin-bottom: 20px;
+      text-align: center;
     }
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #fff;
-      border-top: 5px solid #8a2be2;
+      width: 60px;
+      height: 60px;
+      border: 6px solid #fff;
+      border-top: 6px solid #8a2be2;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -53,60 +58,180 @@
       background: #8a2be2;
       color: #fff;
       font-size: 18px;
+      font-weight: bold;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       transition: 0.3s;
     }
     #enterBtn:hover {
+      transform: scale(1.05);
       background: #6a1bb7;
+    }
+
+    /* مشهد ثلاثي الأبعاد */
+    #bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
     }
 
     /* المحتوى الرئيسي */
     #mainContent {
-      position: fixed;
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 100vh;
-      background: linear-gradient(135deg, #000, #4b0082);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 24px;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 1s ease-in-out, visibility 0s linear 1s;
+      height: 100%;
+      display: none;
     }
+
+    /* تأثير بارالاكس */
+    .parallax {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent);
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.2;
+      animation: floatBg 10s infinite alternate ease-in-out;
+    }
+    @keyframes floatBg {
+      0% { transform: translate(-10%, -10%); }
+      100% { transform: translate(10%, 10%); }
+    }
+
+    /* واجهة المستخدم */
+    .ui-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+      text-align: center;
+      padding: 30px;
+      color: #fff;
+    }
+    .logo {
+      font-size: 40px;
+      font-weight: bold;
+      color: #8a2be2;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+    }
+    .subtitle {
+      font-size: 16px;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    /* روابط تيليجرام */
+    .social {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .social a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .social a:hover {
+      color: #8a2be2;
+    }
+
   </style>
 </head>
 <body>
-
-  <!-- شاشة التحميل -->
   <div id="preloader">
     <h1>جاري إعداد أقوى موقع بالعالم...</h1>
     <div class="spinner"></div>
     <button id="enterBtn">دخول</button>
   </div>
 
-  <!-- المحتوى الرئيسي -->
+  <canvas id="bgCanvas"></canvas>
+
   <div id="mainContent">
-    أهلاً بك في موقع UgIx! 🔥
+    <div class="parallax"></div>
+
+    <div class="ui-container" id="uiContainer">
+      <div class="logo">UgIx</div>
+      <div class="subtitle">أقوى موقع تحميل بتقنيات تفوق الخيال</div>
+
+      <div class="social">
+        <p>قناة التيليجرام: <a href="https://t.me/po_ff" target="_blank">@po_ff</a></p>
+        <p>حسابي الشخصي: <a href="https://t.me/Lx8Lx" target="_blank">@Lx8Lx</a></p>
+      </div>
+    </div>
   </div>
 
   <script>
-    document.getElementById("enterBtn").addEventListener("click", function() {
-      let preloader = document.getElementById("preloader");
-      let mainContent = document.getElementById("mainContent");
+    let scene, camera, renderer, sphere;
+    function init3D() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 0, 20);
 
-      // تخفيف شفافية شاشة التحميل ثم إخفاؤها
-      preloader.style.opacity = "0";
-      setTimeout(() => {
-        preloader.style.visibility = "hidden";
-        mainContent.style.opacity = "1";
-        mainContent.style.visibility = "visible";
-      }, 500);
+      renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bgCanvas"), alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+
+      const geometry = new THREE.SphereGeometry(5, 64, 64);
+      const material = new THREE.MeshStandardMaterial({
+        color: 0x8a2be2,
+        emissive: 0x000000,
+        roughness: 0.2,
+        metalness: 0.8
+      });
+      sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+
+      const pointLight = new THREE.PointLight(0xffffff, 1.2);
+      pointLight.position.set(10, 10, 10);
+      scene.add(pointLight);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+      scene.add(ambientLight);
+
+      animate();
+    }
+    function animate() {
+      requestAnimationFrame(animate);
+      sphere.rotation.y += 0.002;
+      sphere.rotation.x += 0.001;
+      renderer.render(scene, camera);
+    }
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const preloader = document.getElementById("preloader");
+    const enterBtn = document.getElementById("enterBtn");
+    const mainContent = document.getElementById("mainContent");
+    const uiContainer = document.getElementById("uiContainer");
+
+    enterBtn.addEventListener("click", () => {
+      preloader.style.display = "none";
+      mainContent.style.display = "block";
+      gsap.from(uiContainer, { duration: 1.5, y: -100, opacity: 0, ease: "power3.out" });
+    });
+
+    window.addEventListener("load", () => {
+      init3D();
     });
   </script>
-
 </body>
 </html>
