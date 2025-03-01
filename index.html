@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -14,6 +15,7 @@
     }
     body {
       overflow: hidden;
+      background: #000;
     }
 
     /* شاشة التحميل */
@@ -28,12 +30,26 @@
       flex-direction: column;
       color: #fff;
       z-index: 9999;
+      transition: opacity 0.5s ease-out;
     }
     #preloader h1 {
       font-size: 24px;
       margin-bottom: 20px;
     }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #fff;
+      border-top: 5px solid #8a2be2;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     #enterBtn {
+      margin-top: 20px;
       padding: 15px 30px;
       background: #8a2be2;
       color: #fff;
@@ -49,7 +65,7 @@
 
     /* المحتوى الرئيسي */
     #mainContent {
-      display: none; /* مخفي في البداية */
+      position: absolute;
       width: 100%;
       height: 100vh;
       background: linear-gradient(135deg, #000, #4b0082);
@@ -58,6 +74,9 @@
       justify-content: center;
       color: #fff;
       font-size: 24px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 1s ease-in-out, visibility 0s linear 1s;
     }
   </style>
 </head>
@@ -66,19 +85,27 @@
   <!-- شاشة التحميل -->
   <div id="preloader">
     <h1>جاري إعداد أقوى موقع بالعالم...</h1>
+    <div class="spinner"></div>
     <button id="enterBtn">دخول</button>
   </div>
 
   <!-- المحتوى الرئيسي -->
   <div id="mainContent">
-    أهلاً بك في موقع UgIx!
+    أهلاً بك في موقع UgIx! 🔥
   </div>
 
   <script>
-    // زر الدخول
     document.getElementById("enterBtn").addEventListener("click", function() {
-      document.getElementById("preloader").style.display = "none";
-      document.getElementById("mainContent").style.display = "flex";
+      let preloader = document.getElementById("preloader");
+      let mainContent = document.getElementById("mainContent");
+
+      // تخفيف شفافية شاشة التحميل ثم إخفاؤها
+      preloader.style.opacity = "0";
+      setTimeout(() => {
+        preloader.style.display = "none";
+        mainContent.style.opacity = "1";
+        mainContent.style.visibility = "visible";
+      }, 500);
     });
   </script>
 
