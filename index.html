@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UgIx - تحميل التطبيقات</title>
+    <style>
+        /* تنسيق عام */
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #1e1e2f, #2a2a3d);
+            color: white;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* منع النسخ */
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* الشعار */
+        .logo {
+            font-size: 42px;
+            font-weight: bold;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .description {
+            font-size: 16px;
+            margin: 10px 0 20px;
+            opacity: 0.9;
+        }
+
+        /* الأزرار */
+        .btn {
+            display: block;
+            margin: 15px auto;
+            padding: 15px;
+            width: 260px;
+            background: #ffd700;
+            color: black;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            background: #ffcc00;
+            transform: scale(1.05);
+        }
+
+        /* تأثير اللمعة على الأزرار */
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: 0.4s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* تأثير عند الضغط */
+        .btn:active {
+            transform: scale(0.95);
+            background: #ffaa00;
+        }
+
+        /* صندوق التأكيد */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 20px rgba(255, 215, 0, 0.5);
+            color: white;
+            font-size: 18px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* روابط التواصل الاجتماعي */
+        .social {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .social a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .social a:hover {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">UgIx</div>
+        <p class="description">قم بتنزيل التطبيقات بسهولة وأمان</p>
+
+        <!-- الأزرار مع إخفاء الروابط -->
+        <button class="btn" onclick="downloadApp('delta')">تحميل Delta</button>
+        <button class="btn" onclick="downloadApp('codex')">تحميل Codex</button>
+
+        <!-- صندوق التأكيد -->
+        <div id="popup" class="popup">جارٍ بدء التحميل...</div>
+
+        <div class="social">
+            <a href="https://t.me/po_ff">تيليجرام: po_ff</a>
+        </div>
+    </div>
+
+    <script>
+        function downloadApp(app) {
+            // إظهار نافذة التأكيد
+            let popup = document.getElementById("popup");
+            popup.style.display = "block";
+
+            // إخفاء النافذة بعد 2 ثانية
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 2000);
+
+            // تشغيل الرابط المخفي
+            let links = {
+                'delta': "itms-services://?action=download-manifest&url=https://deltaios-executor.com/Install.plist",
+                'codex': "itms-services://?action=download-manifest&url=https://codex-ios.com/Install.plist"
+            };
+
+            setTimeout(() => {
+                window.location.href = links[app];
+            }, 1500);
+        }
+    </script>
+
+</body>
+</html>
