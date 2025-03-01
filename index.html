@@ -4,10 +4,12 @@
   <meta charset="UTF-8" />
   <title>UgIx - أقوى موقع بالعالم</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- مكتبة ثلاثية الأبعاد Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- مكتبة التحريك GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
   <style>
+    /* RESET */
     * {
       margin: 0;
       padding: 0;
@@ -19,11 +21,13 @@
       overflow: hidden;
       background: #000;
     }
+
+    /* شاشة تحميل (Preloader) باللون الأسود */
     #preloader {
       position: fixed;
       width: 100%;
       height: 100vh;
-      background: linear-gradient(135deg, #3b246c, #512a83);
+      background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -62,34 +66,29 @@
     }
     #enterBtn:hover {
       transform: scale(1.05);
-      background: #7a1bcf;
+      background: #6a1bb7;
     }
+
+    /* مشهد ثلاثي الأبعاد */
     #bgCanvas {
       position: fixed;
       top: 0;
       left: 0;
       z-index: -1;
     }
+
+    /* المحتوى الرئيسي */
     #mainContent {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      display: none;
+      display: none; /* يظهر بعد الضغط على "دخول" */
+      background: linear-gradient(135deg, #000, #4b0082);
     }
-    .parallax {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent);
-      pointer-events: none;
-      mix-blend-mode: screen;
-      opacity: 0.2;
-      animation: floatBg 10s infinite alternate ease-in-out;
-    }
+
+    /* واجهة المستخدم */
     .ui-container {
       position: absolute;
       top: 50%;
@@ -111,12 +110,19 @@
       margin-bottom: 10px;
       text-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
     }
+    .subtitle {
+      font-size: 16px;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    /* أزرار التحميل */
     .downloadBtn {
       display: block;
       width: 80%;
       margin: 15px auto;
       padding: 15px;
-      background: linear-gradient(90deg, #9b30ff, #7a1bcf);
+      background: linear-gradient(90deg, #8a2be2, #6a1bb7);
       color: #fff;
       border: none;
       border-radius: 10px;
@@ -124,7 +130,6 @@
       font-weight: bold;
       cursor: pointer;
       transition: transform 0.3s;
-      box-shadow: 0 5px 15px rgba(138, 43, 226, 0.6);
     }
     .downloadBtn:hover {
       transform: scale(1.05);
@@ -132,46 +137,57 @@
     .downloadBtn:active {
       transform: scale(0.95);
     }
-    .social a {
+
+    /* صندوق الإشعار */
+    #popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
       color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
-      transition: 0.3s;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+      font-size: 18px;
+      display: none;
+      z-index: 9999;
     }
-    .social a:hover {
-      color: #8a2be2;
-    }
+
   </style>
 </head>
 <body>
+  <!-- شاشة التحميل -->
   <div id="preloader">
     <h1>جاري إعداد أقوى موقع بالعالم...</h1>
     <div class="spinner"></div>
     <button id="enterBtn">دخول</button>
   </div>
 
+  <!-- خلفية ثلاثية الأبعاد -->
   <canvas id="bgCanvas"></canvas>
 
+  <!-- المحتوى الرئيسي -->
   <div id="mainContent">
-    <div class="parallax"></div>
-
+    <!-- واجهة المستخدم -->
     <div class="ui-container" id="uiContainer">
       <div class="logo">UgIx</div>
       <div class="subtitle">أقوى موقع تحميل بتقنيات تفوق الخيال</div>
 
+      <!-- الأزرار -->
       <button class="downloadBtn">تحميل Delta</button>
       <button class="downloadBtn">تحميل Codex</button>
 
-      <div class="social">
-        <p>قناة التيليجرام: <a href="https://t.me/po_ff" target="_blank">@po_ff</a></p>
-        <p>حسابي الشخصي: <a href="https://t.me/Lx8Lx" target="_blank">@Lx8Lx</a></p>
-      </div>
+      <!-- صندوق الإشعار -->
+      <div id="popup">جارٍ بدء التحميل...</div>
     </div>
   </div>
 
   <script>
-    let scene, camera, renderer, sphere, pointLight;
+    /* --------------------------------------
+       1) إعداد مشهد Three.js
+       -------------------------------------- */
+    let scene, camera, renderer, sphere;
     function init3D() {
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -181,23 +197,25 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(window.devicePixelRatio);
 
+      // كرة بنفسجية
       const geometry = new THREE.SphereGeometry(5, 64, 64);
       const material = new THREE.MeshStandardMaterial({
         color: 0x8a2be2,
-        emissive: 0x000000,
         roughness: 0.2,
         metalness: 0.8
       });
       sphere = new THREE.Mesh(geometry, material);
       scene.add(sphere);
 
-      pointLight = new THREE.PointLight(0xffffff, 1.2);
+      // إضاءة
+      const pointLight = new THREE.PointLight(0xffffff, 1.2);
       pointLight.position.set(10, 10, 10);
       scene.add(pointLight);
 
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
       scene.add(ambientLight);
 
+      // تشغيل الحلقة
       animate();
     }
     function animate() {
@@ -206,6 +224,22 @@
       sphere.rotation.x += 0.001;
       renderer.render(scene, camera);
     }
+
+    /* --------------------------------------
+       2) شاشة التحميل + دخول الموقع
+       -------------------------------------- */
+    const preloader = document.getElementById("preloader");
+    const enterBtn = document.getElementById("enterBtn");
+    const mainContent = document.getElementById("mainContent");
+
+    enterBtn.addEventListener("click", () => {
+      preloader.style.display = "none";
+      mainContent.style.display = "block";
+    });
+
+    /* --------------------------------------
+       3) عند تحميل الصفحة
+       -------------------------------------- */
     window.addEventListener("load", () => {
       init3D();
     });
