@@ -1,29 +1,39 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
+  <meta charset="UTF-8">
   <meta charset="UTF-8" />
-  <title>UgIx - أقوى موقع تحميل بالعالم</title>
+  <title>UgIx - أقوى موقع بالعالم</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- مكتبات 3D و تحريك -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- ثلاثية الأبعاد -->
+  <!-- مكتبة ثلاثية الأبعاد Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <!-- مكتبة التحريك GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <!-- مكتبة GSAP للتفاعلات مع التمرير (إن أردت) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
   <style>
-    /* إعدادات الخط والتصفيف العام */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Arial", sans-serif; }
+    body { overflow: hidden; background: #000; color: #fff; }
+    /* RESET */
     * {
-      margin: 0; 
-      padding: 0; 
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
       user-select: none; /* منع النسخ */
       font-family: "Arial", sans-serif;
     }
     body {
-      background: #000; 
-      overflow: hidden; /* سنعرض مشهد Three.js بملء الشاشة */
+      overflow: hidden; /* سنعرض مشهد 3D بملء الشاشة */
+      background: #000;
     }
 
-    /* شاشة التحميل (Preloader) */
+    /* شاشة تحميل احترافية */
+    /* شاشة تحميل (Preloader) */
     #preloader {
+      position: fixed; width: 100%; height: 100vh; background: linear-gradient(135deg, #1e1e2f, #2a2a3d);
+      display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 9999;
       position: fixed;
       width: 100%;
       height: 100vh;
@@ -31,15 +41,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 9999;
+      z-index: 99999;
       flex-direction: column;
+      color: #fff;
     }
     #preloader h1 {
-      color: #fff;
+      font-size: 26px;
       margin-bottom: 20px;
-      font-size: 28px;
+      text-align: center;
     }
     .spinner {
+      width: 60px; height: 60px; border: 6px solid #fff; border-top: 6px solid #ffd700;
+      border-radius: 50%; animation: spin 1s linear infinite;
       width: 60px;
       height: 60px;
       border: 6px solid #fff;
@@ -48,84 +61,127 @@
       animation: spin 1s linear infinite;
     }
     @keyframes spin {
-      0%   { transform: rotate(0deg); }
+      0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
-    /* زر "دخول" بعد التحميل */
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     #enterBtn {
-      margin-top: 30px;
+      margin-top: 20px; padding: 15px 30px; background: #ffd700;
+      color: #000; font-size: 18px; font-weight: bold;
+      border: none; border-radius: 8px; cursor: pointer;
+      transition: 0.3s; box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.5);
+      margin-top: 20px;
       padding: 15px 30px;
+      background: #ffd700;
+      color: #000;
       font-size: 18px;
       font-weight: bold;
-      color: #000;
-      background: #ffd700;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       transition: 0.3s;
     }
     #enterBtn:hover {
-      background: #ffbb00;
       transform: scale(1.05);
+      background: #ffbb00;
+    }
+    #enterBtn:hover { transform: scale(1.1); background: #ffbb00; }
+
+    /* مشهد ثلاثي الأبعاد */
+    #bgCanvas { position: fixed; top: 0; left: 0; z-index: -1; }
+    #bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
     }
 
-    /* محتوى الموقع */
+    /* المحتوى الرئيسي */
     #mainContent {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      display: none; /* سنظهره بعد الضغط على زر "دخول" */
-      pointer-events: none; /* نعطّل تفاعل العناصر مؤقتًا حتى نجهز الأنيميشن */
+      display: none; /* يظهر بعد الضغط على "دخول" */
     }
 
-    /* حاوية المحتوى الفعلي */
-    .content-container {
+    /* تأثير البارالاكس في الخلفية (طبقة فوق Three.js) */
+    .parallax {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent);
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.2;
+      animation: floatBg 10s infinite alternate ease-in-out;
+    }
+    @keyframes floatBg {
+      0% { transform: translate(-10%, -10%); }
+      100% { transform: translate(10%, 10%); }
+    }
+
+    /* واجهة شفافة زجاجية */
+    /* واجهة المستخدم */
+    .ui-container {
+      position: absolute; top: 50%; left: 50%;
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) perspective(1000px);
+      transform: translate(-50%, -50%);
+      width: 450px; padding: 30px;
+      background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px);
+      border-radius: 15px; text-align: center;
+      box-shadow: 0px 0px 20px rgba(255, 215, 0, 0.3);
       width: 400px;
       background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-      backdrop-filter: blur(10px);
-      padding: 30px;
       text-align: center;
+      padding: 30px;
       color: #fff;
     }
-
     .logo {
-      font-size: 36px;
-      color: #ffd700;
-      text-shadow: 0 0 10px #ffd700;
-      margin-bottom: 10px;
+      font-size: 40px;
       font-weight: bold;
+      color: #ffd700;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
     }
-    .subTitle {
+    .subtitle {
       font-size: 16px;
       margin-bottom: 20px;
-      opacity: 0.8;
+      opacity: 0.9;
     }
+    .logo { font-size: 45px; font-weight: bold; color: #ffd700; margin-bottom: 10px; text-shadow: 0px 0px 10px rgba(255, 215, 0, 0.7); }
+    .subtitle { font-size: 18px; opacity: 0.9; }
 
-    /* الأزرار */
+    /* أزرار التحميل */
     .downloadBtn {
+      display: block; width: 80%; margin: 15px auto;
+      padding: 15px; font-size: 18px; font-weight: bold;
       display: block;
       width: 80%;
-      margin: 10px auto;
+      margin: 15px auto;
       padding: 15px;
       background: linear-gradient(90deg, #ffdd00, #ffaa00);
+      color: #000; border: none; border-radius: 10px;
+      cursor: pointer; position: relative; overflow: hidden;
+      transition: transform 0.3s; box-shadow: 0px 5px 15px rgba(255, 136, 0, 0.6);
+      color: #000;
       border: none;
       border-radius: 10px;
-      color: #000;
       font-size: 18px;
       font-weight: bold;
       cursor: pointer;
       position: relative;
       overflow: hidden;
       transition: transform 0.3s;
+      box-shadow: 0 5px 15px rgba(255, 136, 0, 0.6);
     }
     .downloadBtn:hover {
       transform: scale(1.05);
@@ -140,19 +196,37 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255,255,255,0.2);
       transition: 0.4s;
     }
     .downloadBtn:hover::before {
       left: 100%;
     }
+    .downloadBtn:hover { transform: scale(1.05); }
+    .downloadBtn:active { transform: scale(0.95); }
 
-    /* صندوق الحقوق وروابط التواصل */
+    /* صندوق الإشعار */
+    #popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,215,0,0.5);
+      font-size: 18px;
+      display: none;
+      z-index: 9999;
+    }
+
+    /* روابط تيليجرام */
     .social {
       margin-top: 20px;
-      padding: 10px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       border-radius: 8px;
+      padding: 10px;
     }
     .social a {
       color: #fff;
@@ -165,193 +239,211 @@
       color: #ffd700;
     }
 
-    /* رسالة التحميل */
-    #popup {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      padding: 15px 25px;
-      border-radius: 8px;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-      display: none; /* سنظهرها عند التحميل */
-      font-size: 18px;
-      z-index: 99999;
+    /* مثال على ميزة "تغيير الواجهة حسب الوقت" (فكرة بسيطة) */
+    .night-mode {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    .day-mode {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* أنيميشن صغيرة */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
+@@ -71,67 +235,163 @@ <h1>جاري إعداد أقوى موقع بالعالم...</h1>
+  <canvas id="bgCanvas"></canvas>
 
-<!-- شاشة التحميل -->
-<div id="preloader">
-  <h1>جاري إعداد أقوى موقع بالعالم...</h1>
-  <div class="spinner"></div>
-  <button id="enterBtn">دخول</button>
-</div>
-
-<!-- المشهد الثلاثي الأبعاد (Three.js) -->
-<canvas id="bgCanvas"></canvas>
-
-<!-- المحتوى الرئيسي -->
-<div id="mainContent">
-  <div class="content-container" id="uiContainer">
+  <!-- المحتوى الرئيسي -->
+  <div class="ui-container" id="uiContainer">
     <div class="logo">UgIx</div>
-    <div class="subTitle">أقوى موقع تحميل بتقنيات ثلاثية الأبعاد ومؤثرات مذهلة</div>
+    <div class="subtitle">أقوى موقع تحميل بتقنيات تفوق الخيال</div>
+  <div id="mainContent">
+    <!-- تأثير بارالاكس فوق مشهد 3D -->
+    <div class="parallax"></div>
+
+    <!-- واجهة المستخدم -->
+    <div class="ui-container" id="uiContainer">
+      <div class="logo">UgIx</div>
+      <div class="subtitle">أقوى موقع تحميل بتقنيات تفوق الخيال</div>
 
     <!-- أزرار التحميل -->
     <button class="downloadBtn" onclick="startDownload('delta')">تحميل Delta</button>
     <button class="downloadBtn" onclick="startDownload('codex')">تحميل Codex</button>
+      <!-- الأزرار مع إخفاء الروابط -->
+      <button class="downloadBtn" onclick="startDownload('delta')">تحميل Delta</button>
+      <button class="downloadBtn" onclick="startDownload('codex')">تحميل Codex</button>
 
-    <!-- روابط تواصل -->
-    <div class="social">
-      <a href="https://t.me/Lx8Lx">تيليجرام: Lx8Lx</a>
+      <!-- صندوق الإشعار -->
+      <div id="popup">جارٍ بدء التحميل...</div>
+
+      <!-- روابط التيليجرام -->
+      <div class="social">
+        <p>قناة التيليجرام: <a href="https://t.me/po_ff" target="_blank">@po_ff</a></p>
+        <p>حسابي الشخصي: <a href="https://t.me/Lx8Lx" target="_blank">@Lx8Lx</a></p>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- إشعار التحميل -->
-<div id="popup">جارٍ بدء التحميل...</div>
+  <script>
+    /* 1) إعداد مشهد Three.js */
+    let scene, camera, renderer, sphere;
+    /* --------------------------------------
+       1) ملفات الصوت (حمّلها بنفسك وضع الروابط)
+       -------------------------------------- */
+    const soundEntrance = new Audio("https://YOUR_HOST/ugix_entrance.mp3"); // صوت ترحيب يقول "UgIx" مثلاً
+    const soundDownload = new Audio("https://YOUR_HOST/subscribe_voice.mp3"); // صوت يقول: "لا تنسَ الاشتراك في قناة تيليجرام!"
 
-<script>
-/* ----------------------------
-   ملفات الصوت
-   ---------------------------- */
-/* ملاحظة: يجب أن ترفع ملفات الصوت بنفسك على استضافة خاصة بك
-   وتضع الروابط هنا. هذه مجرد أمثلة! */
-const soundEntrance = new Audio("https://YOUR_HOST/ugix.mp3"); // صوت يقول: "UgIx"
-const soundDownload = new Audio("https://YOUR_HOST/subscribe.mp3"); // صوت يقول: "لا تنسَ الاشتراك في قناة تيليجرام" مثلاً
+    /* --------------------------------------
+       2) إخفاء الروابط (تشفير Base64 بسيط)
+       -------------------------------------- */
+    const encryptedLinks = {
+      "delta": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vZGVsdGFpb3MtZXhlY3V0b3IuY29tL0luc3RhbGwucGxpc3Q=", 
+      "codex": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vY29kZXgtaW9zLmNvbS9JbnN0YWxsLnBsaXN0"
+    };
+    function decodeBase64(str) { return atob(str); }
 
-/* ----------------------------
-   إخفاء الروابط بتشفير بسيط (تمويه)
-   ---------------------------- */
-const encryptedLinks = {
-  "delta": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vZGVsdGFpb3MtZXhlY3V0b3IuY29tL0luc3RhbGwucGxpc3Q=",
-  "codex": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vY29kZXgtaW9zLmNvbS9JbnN0YWxsLnBsaXN0"
-};
+    function startDownload(app) {
+      // تشغيل صوت "لا تنسَ الاشتراك"
+      soundDownload.play();
 
-function decodeBase64(str) {
-  return atob(str);
-}
+      // إظهار إشعار
+      const popup = document.getElementById("popup");
+      popup.style.display = "block";
 
-/* ----------------------------
-   دالة التحميل
-   ---------------------------- */
-function startDownload(app) {
-  // تشغيل صوت التحذير / الاشتراك
-  soundDownload.play();
+      // بعد ثانيتين أخفِ الإشعار وابدأ التحميل
+      setTimeout(() => {
+        popup.style.display = "none";
+        const realLink = decodeBase64(encryptedLinks[app]);
+        window.location.href = realLink;
+      }, 2000);
+    }
 
-  // إظهار نافذة "جارٍ بدء التحميل..."
-  const popup = document.getElementById("popup");
-  popup.style.display = "block";
+    /* --------------------------------------
+       3) إعداد مشهد Three.js
+       -------------------------------------- */
+    let scene, camera, renderer, sphere, pointLight;
+    function init3D() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 0, 25);
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 0, 20);
 
-  // بعد 2 ثانية، أخفِ النافذة وابدأ التحميل
-  setTimeout(() => {
-    popup.style.display = "none";
+      renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bgCanvas"), alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
 
-    // فك تشفير الرابط
-    const realLink = decodeBase64(encryptedLinks[app]);
-    // التوجيه للرابط الحقيقي
-    window.location.href = realLink;
-  }, 2000);
-}
+      // كرة ذهبية
+      // كرة ذهبية تدور
+      const geometry = new THREE.SphereGeometry(5, 64, 64);
+      const material = new THREE.MeshStandardMaterial({
+        color: 0xffd700, emissive: 0x222222, roughness: 0.2, metalness: 0.9
+        color: 0xffd700,
+        emissive: 0x000000,
+        roughness: 0.2,
+        metalness: 0.8
+      });
+      sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
 
-/* ----------------------------
-   تهيئة المشهد الثلاثي الأبعاد
-   ---------------------------- */
-let scene, camera, renderer, sphere;
-function init3D() {
-  // إنشاء المشهد والكاميرا
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(
-    60,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-  camera.position.set(0, 0, 15);
+      // إضاءة
+      const light = new THREE.PointLight(0xffffff, 1.5);
+      light.position.set(10, 10, 10);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.1));
+      pointLight = new THREE.PointLight(0xffffff, 1.2);
+      pointLight.position.set(10, 10, 10);
+      scene.add(pointLight);
 
-  // إعداد Renderer
-  renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bgCanvas"), alpha: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+      scene.add(ambientLight);
 
-  // إنشاء كرة مع مادة لامعة
-  const geometry = new THREE.SphereGeometry(5, 64, 64);
-  const material = new THREE.MeshStandardMaterial({
-    color: 0xffd700,
-    emissive: 0x000000,
-    roughness: 0.2,
-    metalness: 0.7
-  });
-  sphere = new THREE.Mesh(geometry, material);
-  scene.add(sphere);
+      // تشغيل الحلقة
+      animate();
+    }
+    function animate() {
+      requestAnimationFrame(animate);
+      sphere.rotation.y += 0.005;
+      sphere.rotation.y += 0.002;
+      sphere.rotation.x += 0.001;
+      renderer.render(scene, camera);
+    }
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
-  // إضافة إضاءة
-  const pointLight = new THREE.PointLight(0xffffff, 1.2);
-  pointLight.position.set(10, 10, 10);
-  scene.add(pointLight);
+    /* 2) شاشة التحميل */
+    document.getElementById("enterBtn").addEventListener("click", () => {
+      document.getElementById("preloader").style.display = "none";
+      gsap.from("#uiContainer", { duration: 1.5, y: -100, opacity: 0, ease: "power3.out" });
+    /* --------------------------------------
+       4) شاشة التحميل + دخول الموقع
+       -------------------------------------- */
+    const preloader = document.getElementById("preloader");
+    const enterBtn = document.getElementById("enterBtn");
+    const mainContent = document.getElementById("mainContent");
+    const uiContainer = document.getElementById("uiContainer");
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-  scene.add(ambientLight);
+    enterBtn.addEventListener("click", () => {
+      // تشغيل صوت الترحيب
+      soundEntrance.play();
+      // إخفاء شاشة التحميل
+      preloader.style.display = "none";
+      // إظهار المحتوى
+      mainContent.style.display = "block";
+      // تحريك الواجهة بالـ GSAP
+      gsap.from(uiContainer, {
+        duration: 1.5,
+        y: -100,
+        opacity: 0,
+        ease: "power3.out"
+      });
+    });
 
-  // تشغيل حلقة الرسم
-  animate();
-}
+    /* 3) تحميل الملفات */
+    function startDownload(app) {
+      alert(`جارٍ تحميل ${app}`);
+    /* --------------------------------------
+       5) نظام تبديل المظهر (نهار/ليل) كمثال بسيط
+       -------------------------------------- */
+    function switchTheme() {
+      const hour = new Date().getHours();
+      if (hour >= 19 || hour < 6) {
+        // ليل
+        uiContainer.classList.add("night-mode");
+      } else {
+        // نهار
+        uiContainer.classList.add("day-mode");
+      }
+    }
 
-function animate() {
-  requestAnimationFrame(animate);
-  // تدوير الكرة لإعطاء تأثير حي
-  sphere.rotation.y += 0.003;
-  sphere.rotation.x += 0.001;
-  renderer.render(scene, camera);
-}
+    /* 4) بدء المشهد */
+    window.addEventListener("load", init3D);
+    /* --------------------------------------
+       6) أفكار أخرى (يمكنك تطويرها):
+          - ذكاء اصطناعي صوتي يرد على المستخدم
+          - تحريك عناصر واجهة إضافية
+          - تأثيرات بارالاكس متقدمة
+          - نظام حسابات للمستخدمين
+          - إلخ...
+       -------------------------------------- */
 
-/* ----------------------------
-   إعادة ضبط الحجم عند تغيير النافذة
-   ---------------------------- */
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-/* ----------------------------
-   شاشة التحميل ودخول الموقع
-   ---------------------------- */
-const preloader = document.getElementById("preloader");
-const enterBtn = document.getElementById("enterBtn");
-const mainContent = document.getElementById("mainContent");
-const uiContainer = document.getElementById("uiContainer");
-
-enterBtn.addEventListener("click", () => {
-  // تشغيل صوت الترحيب (يقول "UgIx")
-  soundEntrance.play();
-
-  // إخفاء شاشة التحميل
-  preloader.style.display = "none";
-  // إظهار المحتوى الرئيسي
-  mainContent.style.display = "block";
-
-  // تفعيل تفاعل عناصر المحتوى
-  mainContent.style.pointerEvents = "auto";
-
-  // تحريك الواجهة بالـ GSAP
-  gsap.from(uiContainer, {
-    duration: 1.5,
-    y: -100,
-    opacity: 0,
-    ease: "power3.out"
-  });
-});
-
-/* ----------------------------
-   عند تحميل الصفحة بالكامل
-   ---------------------------- */
-window.addEventListener("load", () => {
-  init3D();
-});
-</script>
+    /* --------------------------------------
+       7) عند تحميل الصفحة بالكامل
+       -------------------------------------- */
+    window.addEventListener("load", () => {
+      init3D();
+      switchTheme();
+    });
+  </script>
 </body>
 </html>
