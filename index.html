@@ -40,13 +40,13 @@
       font-size: 26px;
       margin-bottom: 20px;
       text-align: center;
-      color: #ffd700; /* لون ذهبي */
+      color: #ff0000; /* لون أحمر */
     }
     .spinner {
       width: 60px;
       height: 60px;
       border: 6px solid #00bcd4; /* لون أزرق فاتح */
-      border-top: 6px solid #ffd700; /* لون ذهبي */
+      border-top: 6px solid #ff0000; /* لون أحمر */
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -57,8 +57,8 @@
     #enterBtn {
       margin-top: 20px;
       padding: 15px 30px;
-      background: linear-gradient(90deg, #00bcd4, #ffd700); /* تدرج أزرق وذهبي */
-      color: #0a192f;
+      background: linear-gradient(90deg, #ff0000, #00bcd4); /* تدرج أحمر وأزرق */
+      color: #ffffff;
       font-size: 18px;
       font-weight: bold;
       border: none;
@@ -68,7 +68,7 @@
     }
     #enterBtn:hover {
       transform: scale(1.05);
-      background: linear-gradient(90deg, #ffd700, #00bcd4); /* تدرج ذهبي وأزرق */
+      background: linear-gradient(90deg, #00bcd4, #ff0000); /* تدرج أزرق وأحمر */
     }
 
     /* مشهد ثلاثي الأبعاد */
@@ -117,7 +117,7 @@
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(15px);
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
       text-align: center;
       padding: 30px;
       color: #ffffff;
@@ -125,9 +125,9 @@
     .logo {
       font-size: 40px;
       font-weight: bold;
-      color: #ffd700; /* لون ذهبي */
+      color: #ff0000; /* لون أحمر */
       margin-bottom: 10px;
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+      text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
     }
     .subtitle {
       font-size: 16px;
@@ -141,8 +141,8 @@
       width: 80%;
       margin: 15px auto;
       padding: 15px;
-      background: linear-gradient(90deg, #00bcd4, #ffd700); /* تدرج أزرق وذهبي */
-      color: #0a192f;
+      background: linear-gradient(90deg, #ff0000, #00bcd4); /* تدرج أحمر وأزرق */
+      color: #ffffff;
       border: none;
       border-radius: 10px;
       font-size: 18px;
@@ -151,7 +151,7 @@
       position: relative;
       overflow: hidden;
       transition: transform 0.3s;
-      box-shadow: 0 5px 15px rgba(0, 188, 212, 0.6);
+      box-shadow: 0 5px 15px rgba(255, 0, 0, 0.6);
     }
     .downloadBtn:hover {
       transform: scale(1.05);
@@ -183,7 +183,7 @@
       color: #ffffff;
       padding: 15px 25px;
       border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255,215,0,0.5);
+      box-shadow: 0 0 20px rgba(255,0,0,0.5);
       font-size: 18px;
       display: none;
       z-index: 9999;
@@ -204,7 +204,7 @@
       transition: 0.3s;
     }
     .social a:hover {
-      color: #ffd700; /* لون ذهبي */
+      color: #ff0000; /* لون أحمر */
     }
   </style>
 </head>
@@ -256,6 +256,9 @@
        -------------------------------------- */
     const encryptedLinks = {
       "delta": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vZGVsdGFpb3MtZXhlY3V0b3IuY29tL0luc3RhbGwucGxpc3Q=", 
+      "codex": "aXRtcy1zZXJ2aWNلحظة! يبدو أنني قمت بقطع الكود بشكل غير متوقع. سأكمل الكود من حيث توقفنا:
+
+```html
       "codex": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vY29kZXgtaW9zLmNvbS9JbnN0YWxsLnBsaXN0"
     };
     function decodeBase64(str) { return atob(str); }
@@ -292,7 +295,7 @@
       // كرة ذهبية تدور
       const geometry = new THREE.SphereGeometry(5, 64, 64);
       const material = new THREE.MeshStandardMaterial({
-        color: 0xffd700,
+        color: 0xff0000, /* لون أحمر */
         emissive: 0x000000,
         roughness: 0.2,
         metalness: 0.8
