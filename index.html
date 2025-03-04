@@ -16,11 +16,11 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      user-select: none; /* منع النسخ */
+      user-select: none;
       font-family: "Arial", sans-serif;
     }
     body {
-      overflow: hidden; /* سنعرض مشهد 3D بملء الشاشة */
+      overflow: hidden;
       background: #000;
     }
 
@@ -86,7 +86,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      display: none; /* يظهر بعد الضغط على "دخول" */
+      display: none;
     }
 
     /* تأثير البارالاكس في الخلفية (طبقة فوق Three.js) */
@@ -247,7 +247,6 @@
       <!-- الأزرار مع إخفاء الروابط -->
       <button class="downloadBtn" onclick="startDownload('delta')">تحميل Delta</button>
       <button class="downloadBtn" onclick="startDownload('codex')">تحميل Codex</button>
-      <button class="downloadBtn" onclick="startDownload('scarlet')">تحميل Scarlet</button>
 
       <!-- صندوق الإشعار -->
       <div id="popup">جارٍ بدء التحميل...</div>
@@ -272,8 +271,7 @@
        -------------------------------------- */
     const encryptedLinks = {
       "delta": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vZGVsdGFpb3MtZXhlY3V0b3IuY29tL0luc3RhbGwucGxpc3Q=", 
-      "codex": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vY29kZXgtaW9zLmNvbS9JbnN0YWxsLnBsaXN0",
-      "scarlet": "aHR0cHM6Ly91c2VzY2FybGV0LmNvbQ==" // رابط Scarlet
+      "codex": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vY29kZXgtaW9zLmNvbS9JbnN0YWxsLnBsaXN0"
     };
     function decodeBase64(str) { return atob(str); }
 
