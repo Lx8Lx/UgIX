@@ -8,8 +8,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <!-- مكتبة التحريك GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-  <!-- مكتبة GSAP للتفاعلات مع التمرير (إن أردت) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
   <style>
     /* RESET */
     * {
@@ -21,7 +19,8 @@
     }
     body {
       overflow: hidden;
-      background: #000;
+      background: #0a192f; /* خلفية زرقاء غامقة */
+      color: #ffffff;
     }
 
     /* شاشة تحميل (Preloader) */
@@ -29,24 +28,25 @@
       position: fixed;
       width: 100%;
       height: 100vh;
-      background: linear-gradient(135deg, #1e1e2f, #2a2a3d);
+      background: #0a192f;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 99999;
       flex-direction: column;
-      color: #fff;
+      color: #ffffff;
     }
     #preloader h1 {
       font-size: 26px;
       margin-bottom: 20px;
       text-align: center;
+      color: #ffd700; /* لون ذهبي */
     }
     .spinner {
       width: 60px;
       height: 60px;
-      border: 6px solid #fff;
-      border-top: 6px solid #ffd700;
+      border: 6px solid #00bcd4; /* لون أزرق فاتح */
+      border-top: 6px solid #ffd700; /* لون ذهبي */
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -57,8 +57,8 @@
     #enterBtn {
       margin-top: 20px;
       padding: 15px 30px;
-      background: #ffd700;
-      color: #000;
+      background: linear-gradient(90deg, #00bcd4, #ffd700); /* تدرج أزرق وذهبي */
+      color: #0a192f;
       font-size: 18px;
       font-weight: bold;
       border: none;
@@ -68,7 +68,7 @@
     }
     #enterBtn:hover {
       transform: scale(1.05);
-      background: #ffbb00;
+      background: linear-gradient(90deg, #ffd700, #00bcd4); /* تدرج ذهبي وأزرق */
     }
 
     /* مشهد ثلاثي الأبعاد */
@@ -120,12 +120,12 @@
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
       text-align: center;
       padding: 30px;
-      color: #fff;
+      color: #ffffff;
     }
     .logo {
       font-size: 40px;
       font-weight: bold;
-      color: #ffd700;
+      color: #ffd700; /* لون ذهبي */
       margin-bottom: 10px;
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
     }
@@ -141,8 +141,8 @@
       width: 80%;
       margin: 15px auto;
       padding: 15px;
-      background: linear-gradient(90deg, #ffdd00, #ffaa00);
-      color: #000;
+      background: linear-gradient(90deg, #00bcd4, #ffd700); /* تدرج أزرق وذهبي */
+      color: #0a192f;
       border: none;
       border-radius: 10px;
       font-size: 18px;
@@ -151,7 +151,7 @@
       position: relative;
       overflow: hidden;
       transition: transform 0.3s;
-      box-shadow: 0 5px 15px rgba(255, 136, 0, 0.6);
+      box-shadow: 0 5px 15px rgba(0, 188, 212, 0.6);
     }
     .downloadBtn:hover {
       transform: scale(1.05);
@@ -180,7 +180,7 @@
       left: 50%;
       transform: translateX(-50%);
       background: rgba(0,0,0,0.8);
-      color: #fff;
+      color: #ffffff;
       padding: 15px 25px;
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(255,215,0,0.5);
@@ -197,29 +197,14 @@
       padding: 10px;
     }
     .social a {
-      color: #fff;
+      color: #ffffff;
       text-decoration: none;
       font-weight: bold;
       font-size: 16px;
       transition: 0.3s;
     }
     .social a:hover {
-      color: #ffd700;
-    }
-
-    /* مثال على ميزة "تغيير الواجهة حسب الوقت" (فكرة بسيطة) */
-    .night-mode {
-      background: rgba(0, 0, 0, 0.7);
-    }
-    .day-mode {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    /* أنيميشن صغيرة */
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-      100% { transform: scale(1); }
+      color: #ffd700; /* لون ذهبي */
     }
   </style>
 </head>
