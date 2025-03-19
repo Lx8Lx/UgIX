@@ -246,12 +246,18 @@
     const soundEntrance = new Audio("https://YOUR_HOST/ugix_entrance.mp3");
     const soundDownload = new Audio("https://YOUR_HOST/subscribe_voice.mp3");
 
+    // روابط مشفرة باستخدام Base64
     const encryptedLinks = {
-      "delta": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vZGVsdGFpb3MtZXhlY3V0b3IuY29tL0luc3RhbGwucGxpc3Q=", 
-      "codex": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vY29kZXgtaW9zLmNvbS9JbnN0YWxsLnBsaXN0"
+      "delta": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vZGVsdGFpb3MtZXhlY3V0b3IuY29tL0luc3RhbGwucGxpc3Q=", // الرابط الجديد
+      "codex": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vY29kZXgtaW9zLmNvbS9JbnN0YWxsLnBsaXN0" // رابط Codex
     };
-    function decodeBase64(str) { return atob(str); }
 
+    // فك تشفير Base64
+    function decodeBase64(str) {
+      return atob(str);
+    }
+
+    // بدء التحميل
     function startDownload(app) {
       soundDownload.play();
       const popup = document.getElementById("popup");
@@ -259,7 +265,7 @@
       setTimeout(() => {
         popup.style.display = "none";
         const realLink = decodeBase64(encryptedLinks[app]);
-        window.location.href = realLink;
+        window.location.href = realLink; // توجيه المستخدم إلى الرابط
       }, 2000);
     }
 
