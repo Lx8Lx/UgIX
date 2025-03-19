@@ -4,9 +4,7 @@
   <meta charset="UTF-8" />
   <title>UgIx - أقوى موقع بالعالم</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- مكتبة ثلاثية الأبعاد Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- مكتبة التحريك GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
   <style>
     /* RESET */
@@ -19,7 +17,7 @@
     }
     body {
       overflow: hidden;
-      background: #000000; /* خلفية سوداء */
+      background: #000000;
       color: #ffffff;
     }
 
@@ -40,19 +38,35 @@
       font-size: 26px;
       margin-bottom: 20px;
       text-align: center;
-      color: #ff0000; /* لون أحمر */
+      color: #ff0000;
     }
     .spinner {
       width: 60px;
       height: 60px;
-      border: 6px solid #000000; /* لون أسود */
-      border-top: 6px solid #ff0000; /* لون أحمر */
+      border: 6px solid #000000;
+      border-top: 6px solid #ff0000;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+    #enterBtn {
+      margin-top: 20px;
+      padding: 15px 30px;
+      background: linear-gradient(90deg, #ff0000, #000000);
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #enterBtn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #000000, #ff0000);
     }
 
     /* مشهد ثلاثي الأبعاد */
@@ -109,7 +123,7 @@
     .logo {
       font-size: 40px;
       font-weight: bold;
-      color: #ff0000; /* لون أحمر */
+      color: #ff0000;
       margin-bottom: 10px;
       text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
     }
@@ -125,7 +139,7 @@
       width: 80%;
       margin: 15px auto;
       padding: 15px;
-      background: linear-gradient(90deg, #ff0000, #000000); /* تدرج أحمر وأسود */
+      background: linear-gradient(90deg, #ff0000, #000000);
       color: #ffffff;
       border: none;
       border-radius: 10px;
@@ -188,7 +202,7 @@
       transition: 0.3s;
     }
     .social a:hover {
-      color: #ff0000; /* لون أحمر */
+      color: #ff0000;
     }
   </style>
 </head>
@@ -197,6 +211,7 @@
   <div id="preloader">
     <h1>جاري إعداد أقوى موقع بالعالم...</h1>
     <div class="spinner"></div>
+    <button id="enterBtn">دخول</button>
   </div>
 
   <!-- خلفية ثلاثية الأبعاد -->
@@ -228,15 +243,9 @@
   </div>
 
   <script>
-    /* --------------------------------------
-       1) ملفات الصوت (حمّلها بنفسك وضع الروابط)
-       -------------------------------------- */
-    const soundEntrance = new Audio("https://YOUR_HOST/ugix_entrance.mp3"); // صوت ترحيب يقول "UgIx" مثلاً
-    const soundDownload = new Audio("https://YOUR_HOST/subscribe_voice.mp3"); // صوت يقول: "لا تنسَ الاشتراك في قناة تيليجرام!"
+    const soundEntrance = new Audio("https://YOUR_HOST/ugix_entrance.mp3");
+    const soundDownload = new Audio("https://YOUR_HOST/subscribe_voice.mp3");
 
-    /* --------------------------------------
-       2) إخفاء الروابط (تشفير Base64 بسيط)
-       -------------------------------------- */
     const encryptedLinks = {
       "delta": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vZGVsdGFpb3MtZXhlY3V0b3IuY29tL0luc3RhbGwucGxpc3Q=", 
       "codex": "aXRtcy1zZXJ2aWNlczovLz9hY3Rpb249ZG93bmxvYWQtbWFuaWZlc3QmdXJsPWh0dHBzOi8vY29kZXgtaW9zLmNvbS9JbnN0YWxsLnBsaXN0"
@@ -244,14 +253,9 @@
     function decodeBase64(str) { return atob(str); }
 
     function startDownload(app) {
-      // تشغيل صوت "لا تنسَ الاشتراك"
       soundDownload.play();
-
-      // إظهار إشعار
       const popup = document.getElementById("popup");
       popup.style.display = "block";
-
-      // بعد ثانيتين أخفِ الإشعار وابدأ التحميل
       setTimeout(() => {
         popup.style.display = "none";
         const realLink = decodeBase64(encryptedLinks[app]);
@@ -259,9 +263,6 @@
       }, 2000);
     }
 
-    /* --------------------------------------
-       3) إعداد مشهد Three.js
-       -------------------------------------- */
     let scene, camera, renderer, sphere, pointLight;
     function init3D() {
       scene = new THREE.Scene();
@@ -272,10 +273,9 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(window.devicePixelRatio);
 
-      // كرة حمراء داكنة تدور
       const geometry = new THREE.SphereGeometry(5, 64, 64);
       const material = new THREE.MeshStandardMaterial({
-        color: 0xff0000, /* لون أحمر */
+        color: 0xff0000,
         emissive: 0x000000,
         roughness: 0.2,
         metalness: 0.8
@@ -283,7 +283,6 @@
       sphere = new THREE.Mesh(geometry, material);
       scene.add(sphere);
 
-      // إضاءة
       pointLight = new THREE.PointLight(0xffffff, 1.2);
       pointLight.position.set(10, 10, 10);
       scene.add(pointLight);
@@ -291,7 +290,6 @@
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
       scene.add(ambientLight);
 
-      // تشغيل الحلقة
       animate();
     }
     function animate() {
@@ -306,16 +304,14 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    /* --------------------------------------
-       4) شاشة التحميل + دخول الموقع
-       -------------------------------------- */
     const preloader = document.getElementById("preloader");
+    const enterBtn = document.getElementById("enterBtn");
     const mainContent = document.getElementById("mainContent");
     const uiContainer = document.getElementById("uiContainer");
 
-    // إظهار المحتوى بعد تحميل الصفحة
-    window.addEventListener("load", () => {
-      init3D();
+    enterBtn.addEventListener("click", () => {
+      soundEntrance.play();
+      preloader.style.display = "none";
       mainContent.style.display = "block";
       gsap.from(uiContainer, {
         duration: 1.5,
@@ -325,32 +321,15 @@
       });
     });
 
-    /* --------------------------------------
-       5) نظام تبديل المظهر (نهار/ليل) كمثال بسيط
-       -------------------------------------- */
     function switchTheme() {
       const hour = new Date().getHours();
       if (hour >= 19 || hour < 6) {
-        // ليل
         uiContainer.classList.add("night-mode");
       } else {
-        // نهار
         uiContainer.classList.add("day-mode");
       }
     }
 
-    /* --------------------------------------
-       6) أفكار أخرى (يمكنك تطويرها):
-          - ذكاء اصطناعي صوتي يرد على المستخدم
-          - تحريك عناصر واجهة إضافية
-          - تأثيرات بارالاكس متقدمة
-          - نظام حسابات للمستخدمين
-          - إلخ...
-       -------------------------------------- */
-
-    /* --------------------------------------
-       7) عند تحميل الصفحة بالكامل
-       -------------------------------------- */
     window.addEventListener("load", () => {
       init3D();
       switchTheme();
