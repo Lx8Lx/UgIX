@@ -79,32 +79,6 @@
       opacity: 0.7;
     }
 
-    /* تأثير الصورة المنبثقة */
-    .download-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 99999;
-      max-width: 300px;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 0 40px rgba(255,255,255,0.4);
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.4s all ease-out;
-    }
-    .download-popup.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    .download-popup img {
-      width: 100%;
-      height: auto;
-      border: 3px solid #fff;
-      border-radius: 15px;
-    }
-
     /* تأثير التموج */
     .ripple {
       position: absolute;
@@ -224,6 +198,23 @@
       left: 100%;
     }
 
+    /* صندوق الإشعار */
+    #popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      color: #fff;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.3);
+      font-size: 18px;
+      display: none;
+      z-index: 9999;
+      border: 1px solid #666;
+    }
+
     /* روابط التواصل */
     .social {
       margin-top: 25px;
@@ -266,11 +257,6 @@
   <!-- خلفية ثلاثية الأبعاد -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- صندوق الصورة المنبثقة -->
-  <div class="download-popup" id="downloadPopup">
-    <img src="7ccc4a8ef37e6b8fd64fe69d5bb34bbf.jpeg" alt="TrollX Download">
-  </div>
-
   <!-- المحتوى الرئيسي -->
   <div id="mainContent">
     <div class="parallax"></div>
@@ -284,6 +270,9 @@
       <button class="downloadBtn" onclick="startDownload('delta-ios')">تنزيل Delta للايفون</button>
       <button class="downloadBtn" onclick="startDownload('delta-android')">تنزيل دلتا للاندرويد</button>
       <button class="downloadBtn" onclick="window.open('https://youtube.com/@troll.x40_40?si=CAqmf5tz2zFqlFbv', '_blank')">حقوق TrollX يوتيوب</button>
+
+      <!-- صندوق الإشعار -->
+      <div id="popup">جارٍ بدء التحميل...</div>
 
       <!-- روابط التواصل -->
       <div class="social">
@@ -321,29 +310,14 @@
       ripple.style.left = event.clientX + 'px';
       ripple.style.top = event.clientY + 'px';
       document.body.appendChild(ripple);
-      
-      // عرض الصورة
-      const popup = document.getElementById('downloadPopup');
-      soundDownload.play();
-      
-      gsap.to(popup, {
-        duration: 0.8,
-        opacity: 1,
-        visibility: 'visible',
-        ease: 'power4.out'
-      });
-      
-      // إخفاء الصورة بعد 3 ثواني
-      setTimeout(() => {
-        gsap.to(popup, {
-          duration: 0.5,
-          opacity: 0,
-          visibility: 'hidden'
-        });
-      }, 3000);
 
-      // متابعة التنزيل
+      // إظهار الإشعار
+      const popup = document.getElementById('popup');
+      soundDownload.play();
+      popup.style.display = "block";
+      
       setTimeout(() => {
+        popup.style.display = "none";
         const realLink = decodeBase64(encryptedLinks[app]);
         if(realLink) {
           window.location.href = realLink;
