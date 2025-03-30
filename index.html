@@ -1,420 +1,409 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <title>UgIx & TrollX - أقوى موقع بالعالم</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.min.js"></script>
   <style>
-    /* RESET */
+    /* Reset متقدم */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       user-select: none;
-      font-family: "Arial", sans-serif;
-    }
-    body {
-      overflow: hidden;
-      background: #000 url('https://i.ibb.co/0j7Zz8T/troll-bg.jpg') no-repeat center/cover;
-      color: #fff;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Segoe UI', system-ui, sans-serif;
     }
 
-    /* شاشة التحميل */
+    body {
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      perspective: 1000px;
+    }
+
+    /* Preloader فائق التطور */
     #preloader {
       position: fixed;
       width: 100%;
       height: 100vh;
-      background: #000;
+      background: radial-gradient(circle at center, #000 0%, #111 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 99999;
+      z-index: 9999;
       flex-direction: column;
       color: #fff;
     }
-    #preloader h1 {
-      font-size: 26px;
-      margin-bottom: 20px;
-      text-align: center;
-      color: #888;
-    }
+
     .spinner {
-      width: 60px;
-      height: 60px;
-      border: 6px solid #333;
-      border-top: 6px solid #fff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    #enterBtn {
-      margin-top: 20px;
-      padding: 15px 30px;
-      background: linear-gradient(90deg, #666, #fff);
-      color: #000;
-      font-size: 18px;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 0 15px rgba(255,255,255,0.3);
-    }
-    #enterBtn:hover {
-      transform: scale(1.05);
-      background: linear-gradient(90deg, #fff, #666);
+      width: 80px;
+      height: 80px;
+      position: relative;
+      filter: drop-shadow(0 0 15px rgba(255,255,255,0.5));
     }
 
-    /* خلفية ثلاثية الأبعاد */
+    .spinner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 4px solid transparent;
+      border-top-color: #fff;
+      border-bottom-color: #fff;
+      animation: spin 1.5s linear infinite;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .progress-bar {
+      width: 300px;
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      margin-top: 30px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #fff, #00ff88);
+      transition: 0.4s ease;
+      box-shadow: 0 0 20px rgba(0,255,136,0.3);
+    }
+
+    /* 3D Background Effects */
     #bgCanvas {
       position: fixed;
       top: 0;
       left: 0;
       z-index: -1;
-      opacity: 0.7;
+      opacity: 0.9;
     }
 
-    /* تأثير التموج */
-    .ripple {
-      position: absolute;
-      background: rgba(255,255,255,0.3);
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      border-radius: 50%;
-      animation: rippleEffect 0.6s linear;
-    }
-    @keyframes rippleEffect {
-      0% { width: 0; height: 0; opacity: 1; }
-      100% { width: 500px; height: 500px; opacity: 0; }
-    }
-
-    /* المحتوى الرئيسي */
-    #mainContent {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-    }
-
-    /* تأثير البارالاكس */
-    .parallax {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent);
-      pointer-events: none;
-      mix-blend-mode: screen;
-      opacity: 0.3;
-      animation: floatBg 10s infinite alternate ease-in-out;
-    }
-    @keyframes floatBg {
-      0% { transform: translate(-10%, -10%); }
-      100% { transform: translate(10%, 10%); }
-    }
-
-    /* واجهة المستخدم */
+    /* UI Design متطور */
     .ui-container {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 450px;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(25px);
-      border-radius: 15px;
-      box-shadow: 0 0 30px rgba(255,255,255,0.2);
-      text-align: center;
-      padding: 30px;
-      color: #fff;
-      border: 1px solid #666;
-    }
-    .logo {
-      font-size: 45px;
-      font-weight: bold;
-      color: #fff;
-      margin-bottom: 10px;
-      text-shadow: 0 0 20px rgba(255,255,255,0.5);
-      animation: float 3s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    .logo span {
-      color: #888;
-    }
-    .subtitle {
-      font-size: 16px;
-      margin-bottom: 25px;
-      opacity: 0.9;
-      color: #ccc;
+      width: 500px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(25px) saturate(180%);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 0 50px rgba(255,255,255,0.15),
+                   inset 0 0 20px rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      transform-style: preserve-3d;
     }
 
-    /* أزرار التحميل */
-    .downloadBtn {
-      display: block;
-      width: 85%;
-      margin: 15px auto;
-      padding: 15px;
-      background: linear-gradient(90deg, #666, #fff);
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s;
-      box-shadow: 0 5px 20px rgba(255,255,255,0.2);
-    }
-    .downloadBtn:hover {
-      transform: scale(1.05);
-      background: linear-gradient(90deg, #fff, #666);
-    }
-    .downloadBtn:active {
-      transform: scale(0.95);
-    }
-    .downloadBtn::before {
-      content: "";
+    .ui-container::before {
+      content: '';
       position: absolute;
-      top: 0;
-      left: -100%;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(45deg, 
+        rgba(255,255,255,0.05) 0%,
+        rgba(255,255,255,0.15) 50%,
+        rgba(255,255,255,0.05) 100%
+      );
+      z-index: -1;
+      animation: gradientFlow 8s infinite linear;
+    }
+
+    @keyframes gradientFlow {
+      100% { background-position: 400% 0; }
+    }
+
+    .logo {
+      font-size: 3.5em;
+      background: linear-gradient(45deg, #fff, #00ff88);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 30px rgba(0,255,136,0.4);
+      margin-bottom: 20px;
+      font-weight: 800;
+      letter-spacing: -2px;
+    }
+
+    .downloadBtn {
+      position: relative;
+      width: 100%;
+      padding: 20px;
+      margin: 15px 0;
+      background: linear-gradient(45deg, 
+        rgba(255,255,255,0.1),
+        rgba(255,255,255,0.2)
+      );
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 1.1em;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      overflow: hidden;
+    }
+
+    .downloadBtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,255,136,0.3);
+      background: linear-gradient(45deg, 
+        rgba(0,255,136,0.2),
+        rgba(255,255,255,0.3)
+      );
+    }
+
+    .downloadBtn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg,
+        transparent,
+        rgba(255,255,255,0.1),
+        transparent
+      );
+      transform: rotate(45deg);
+      animation: btnShine 3s infinite;
+    }
+
+    @keyframes btnShine {
+      100% { transform: translateX(200%) rotate(45deg); }
+    }
+
+    /* تأثيرات النص */
+    .subtitle {
+      font-size: 1.1em;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 30px;
+      line-height: 1.6;
+      text-shadow: 0 2px 10px rgba(0,255,136,0.2);
+    }
+
+    /* Particle Effects */
+    .particles {
+      position: fixed;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.2);
-      transition: 0.4s;
-    }
-    .downloadBtn:hover::before {
-      left: 100%;
+      pointer-events: none;
+      z-index: -1;
     }
 
-    /* صندوق الإشعار */
-    #popup {
+    /* Custom Cursor */
+    .cursor {
       position: fixed;
-      top: 20px;
+      width: 30px;
+      height: 30px;
+      border: 2px solid #00ff88;
+      border-radius: 50%;
+      pointer-events: none;
+      mix-blend-mode: difference;
+      transition: 
+        transform 0.3s ease,
+        opacity 0.3s ease;
+      z-index: 999;
+    }
+
+    .cursor-inner {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #00ff88;
+      border-radius: 50%;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.9);
-      color: #fff;
-      padding: 15px 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 25px rgba(255,255,255,0.3);
-      font-size: 18px;
-      display: none;
-      z-index: 9999;
-      border: 1px solid #666;
-    }
-
-    /* روابط التواصل */
-    .social {
-      margin-top: 25px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 15px;
-    }
-    .social a {
-      color: #ccc;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
-      transition: 0.3s;
-      display: block;
-      margin: 10px 0;
-    }
-    .social a:hover {
-      color: #fff;
-      transform: translateX(10px);
-    }
-    .credits {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(0,0,0,0.7);
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 14px;
+      transform: translate(-50%, -50%);
     }
   </style>
 </head>
 <body>
-  <!-- شاشة التحميل -->
+  <!-- Preloader -->
   <div id="preloader">
-    <h1>جاري إعداد أقوى موقع بالعالم...</h1>
     <div class="spinner"></div>
-    <button id="enterBtn">دخول</button>
-  </div>
-
-  <!-- خلفية ثلاثية الأبعاد -->
-  <canvas id="bgCanvas"></canvas>
-
-  <!-- المحتوى الرئيسي -->
-  <div id="mainContent">
-    <div class="parallax"></div>
-    
-    <!-- واجهة المستخدم -->
-    <div class="ui-container" id="uiContainer">
-      <div class="logo">UgIX <span>+ TrollX</span></div>
-      <div class="subtitle">أقوى موقع تحميل بتقنيات تفوق الخيال</div>
-
-      <!-- أزرار التحميل -->
-      <button class="downloadBtn" onclick="startDownload('delta-ios')">تنزيل Delta للايفون</button>
-      <button class="downloadBtn" onclick="startDownload('delta-android')">تنزيل دلتا للاندرويد</button>
-      <button class="downloadBtn" onclick="window.open('https://youtube.com/@troll.x40_40?si=CAqmf5tz2zFqlFbv', '_blank')">حقوق TrollX يوتيوب</button>
-
-      <!-- صندوق الإشعار -->
-      <div id="popup">جارٍ بدء التحميل...</div>
-
-      <!-- روابط التواصل -->
-      <div class="social">
-        <p>المطورين: <strong>UgIX + TrollX</strong></p>
-        <a href="https://t.me/po_ff" target="_blank">قناة التيليجرام الرسمية</a>
-        <a href="https://t.me/Lx8Lx" target="_blank">الدعم الفني على التيليجرام</a>
-      </div>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
     </div>
   </div>
 
-  <script>
-    // تأثيرات الصوت
-    const soundEntrance = new Audio("https://YOUR_HOST/ugix_entrance.mp3");
-    const soundDownload = new Audio("https://YOUR_HOST/subscribe_voice.mp3");
+  <!-- 3D Background -->
+  <canvas id="bgCanvas"></canvas>
 
-    // روابط التنزيل المشفرة
-    const encryptedLinks = {
-      "delta-ios": btoa("itms-services://?action=download-manifest&url=https://deltaios-executor.com/Install1.plist"),
-      "delta-android": btoa("https://www.mediafire.com/file_premium/mie033f76povc7j/Delta-665.684-01.apk/file")
-    };
+  <!-- Particles -->
+  <div class="particles"></div>
 
-    function decodeBase64(str) {
-      try {
-        return atob(str);
-      } catch(e) {
-        console.error("خطأ في فك التشفير:", e);
-        return null;
+  <!-- Custom Cursor -->
+  <div class="cursor"></div>
+  <div class="cursor-inner"></div>
+
+  <!-- Main Content -->
+  <div class="ui-container">
+    <div class="logo">UgIX + TrollX</div>
+    <div class="subtitle">
+      منصة التحميل الأقوى عالميًا بتقنيات الذكاء الاصطناعي المتطور
+    </div>
+
+    <button class="downloadBtn" onclick="startDownload('delta-ios')">
+      <span>📱 تنزيل Delta للإيفون</span>
+      <div class="download-progress"></div>
+    </button>
+
+    <button class="downloadBtn" onclick="startDownload('delta-android')">
+      <span>🤖 تنزيل دلتا للاندرويد</span>
+    </button>
+
+    <div class="social">
+      <!-- Social links here -->
+    </div>
+  </div>
+
+<script>
+  // Advanced 3D Scene
+  let scene, camera, renderer, composer;
+  let geometry, material, torus;
+  
+  function init3D() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({ 
+      canvas: document.getElementById('bgCanvas'),
+      antialias: true,
+      alpha: true
+    });
+    
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    // Advanced Geometry
+    geometry = new THREE.TorusKnotGeometry(3, 1, 256, 32);
+    material = new THREE.MeshStandardMaterial({
+      color: 0x00ff88,
+      metalness: 0.8,
+      roughness: 0.2,
+      emissive: 0x003300,
+      wireframe: true
+    });
+    
+    torus = new THREE.Mesh(geometry, material);
+    scene.add(torus);
+
+    // Lighting System
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    
+    const pointLight = new THREE.PointLight(0x00ff88, 1.5);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
+
+    // Post-processing
+    composer = new THREE.EffectComposer(renderer);
+    const renderPass = new THREE.RenderPass(scene, camera);
+    composer.addPass(renderPass);
+    
+    const bloomPass = new THREE.UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      1.5, 0.4, 0.85
+    );
+    composer.addPass(bloomPass);
+
+    // Animation
+    camera.position.z = 8;
+    
+    function animate() {
+      requestAnimationFrame(animate);
+      torus.rotation.x += 0.005;
+      torus.rotation.y += 0.003;
+      composer.render();
+    }
+    animate();
+  }
+
+  // Custom Cursor
+  document.addEventListener('mousemove', (e) => {
+    gsap.to('.cursor', {
+      x: e.clientX,
+      y: e.clientY,
+      duration: 0.3
+    });
+    
+    gsap.to('.cursor-inner', {
+      x: e.clientX,
+      y: e.clientY,
+      duration: 0.15
+    });
+  });
+
+  // Preloader Simulation
+  window.addEventListener('load', () => {
+    const progress = document.querySelector('.progress-fill');
+    let width = 0;
+    
+    const interval = setInterval(() => {
+      width += Math.random() * 3;
+      progress.style.width = width + '%';
+      
+      if(width >= 100) {
+        clearInterval(interval);
+        gsap.to('#preloader', {
+          opacity: 0,
+          duration: 1,
+          onComplete: () => {
+            document.getElementById('preloader').remove();
+          }
+        });
       }
+    }, 100);
+
+    init3D();
+    initParticles();
+  });
+
+  // Particle System
+  function initParticles() {
+    const particles = new Array(1000).fill().map(() => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 3 + 1,
+      speedX: (Math.random() - 0.5) * 0.2,
+      speedY: (Math.random() - 0.5) * 0.2
+    }));
+
+    function updateParticles() {
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        
+        if(p.x > window.innerWidth) p.x = 0;
+        if(p.x < 0) p.x = window.innerWidth;
+        if(p.y > window.innerHeight) p.y = 0;
+        if(p.y < 0) p.y = window.innerHeight;
+      });
+      
+      requestAnimationFrame(updateParticles);
     }
+    updateParticles();
+  }
 
-    function startDownload(app) {
-      // تأثير التموج
-      const ripple = document.createElement('div');
-      ripple.classList.add('ripple');
-      ripple.style.left = event.clientX + 'px';
-      ripple.style.top = event.clientY + 'px';
-      document.body.appendChild(ripple);
-
-      // إظهار الإشعار
-      const popup = document.getElementById('popup');
-      soundDownload.play();
-      popup.style.display = "block";
-      
-      setTimeout(() => {
-        popup.style.display = "none";
-        const realLink = decodeBase64(encryptedLinks[app]);
-        if(realLink) {
-          window.location.href = realLink;
-        } else {
-          alert("حدث خطأ في التحميل!");
-        }
-      }, 1500);
-    }
-
-    // Three.js Configuration
-    let scene, camera, renderer, sphere;
-    function init3D() {
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-      renderer = new THREE.WebGLRenderer({ 
-        canvas: document.getElementById("bgCanvas"),
-        alpha: true,
-        antialias: true 
-      });
-      
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(window.devicePixelRatio);
-
-      // Geometry
-      const geometry = new THREE.IcosahedronGeometry(4, 5);
-      const material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        emissive: 0x00ffff,
-        shininess: 150,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.8
-      });
-      
-      sphere = new THREE.Mesh(geometry, material);
-      scene.add(sphere);
-
-      // Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-      scene.add(ambientLight);
-      
-      const pointLight = new THREE.PointLight(0xffffff, 1.5);
-      pointLight.position.set(10, 10, 10);
-      scene.add(pointLight);
-
-      camera.position.z = 8;
-
-      // Animation
-      gsap.to(sphere.rotation, {
-        duration: 10,
-        x: Math.PI * 2,
-        y: Math.PI * 2,
-        repeat: -1,
-        ease: "none"
-      });
-    }
-
-    // Event Listeners
-    window.addEventListener("resize", () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // UI Handling
-    const preloader = document.getElementById("preloader");
-    const enterBtn = document.getElementById("enterBtn");
-    const mainContent = document.getElementById("mainContent");
-
-    enterBtn.addEventListener("click", () => {
-      soundEntrance.play();
-      gsap.to(preloader, {
-        duration: 1,
-        opacity: 0,
-        onComplete: () => preloader.style.display = "none"
-      });
-      mainContent.style.display = "block";
-      gsap.from(".ui-container", {
-        duration: 1.5,
-        y: -100,
-        opacity: 0,
-        rotate: -5,
-        ease: "elastic.out(1, 0.5)",
-        stagger: 0.1
-      });
-    });
-
-    // Initialization
-    window.addEventListener("load", () => {
-      init3D();
-      gsap.from("#preloader h1", {
-        duration: 1.5,
-        y: 50,
-        opacity: 0,
-        ease: "power2.out"
-      });
-    });
-  </script>
+  // Responsive Handling
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+  });
+</script>
 </body>
 </html>
