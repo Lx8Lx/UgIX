@@ -21,7 +21,7 @@
       color: #fff;
     }
 
-    /* شاشة التحميل (Preloader) */
+    /* شاشة التحميل */
     #preloader {
       position: fixed;
       width: 100%;
@@ -70,13 +70,53 @@
       background: linear-gradient(90deg, #fff, #666);
     }
 
-    /* خلفية مشهد ثلاثي الأبعاد */
+    /* خلفية ثلاثية الأبعاد */
     #bgCanvas {
       position: fixed;
       top: 0;
       left: 0;
       z-index: -1;
       opacity: 0.7;
+    }
+
+    /* تأثير الصورة المنبثقة */
+    .download-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 99999;
+      max-width: 300px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(255,255,255,0.4);
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.4s all ease-out;
+    }
+    .download-popup.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .download-popup img {
+      width: 100%;
+      height: auto;
+      border: 3px solid #fff;
+      border-radius: 15px;
+    }
+
+    /* تأثير التموج */
+    .ripple {
+      position: absolute;
+      background: rgba(255,255,255,0.3);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      border-radius: 50%;
+      animation: rippleEffect 0.6s linear;
+    }
+    @keyframes rippleEffect {
+      0% { width: 0; height: 0; opacity: 1; }
+      100% { width: 500px; height: 500px; opacity: 0; }
     }
 
     /* المحتوى الرئيسي */
@@ -89,7 +129,7 @@
       display: none;
     }
 
-    /* تأثير البارالاكس في الخلفية */
+    /* تأثير البارالاكس */
     .parallax {
       position: absolute;
       top: 0;
@@ -129,6 +169,11 @@
       color: #fff;
       margin-bottom: 10px;
       text-shadow: 0 0 20px rgba(255,255,255,0.5);
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
     .logo span {
       color: #888;
@@ -179,23 +224,6 @@
       left: 100%;
     }
 
-    /* صندوق الإشعار */
-    #popup {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.9);
-      color: #fff;
-      padding: 15px 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 25px rgba(255,255,255,0.3);
-      font-size: 18px;
-      display: none;
-      z-index: 9999;
-      border: 1px solid #666;
-    }
-
     /* روابط التواصل */
     .social {
       margin-top: 25px;
@@ -238,11 +266,15 @@
   <!-- خلفية ثلاثية الأبعاد -->
   <canvas id="bgCanvas"></canvas>
 
+  <!-- صندوق الصورة المنبثقة -->
+  <div class="download-popup" id="downloadPopup">
+    <img src="7ccc4a8ef37e6b8fd64fe69d5bb34bbf.jpeg" alt="TrollX Download">
+  </div>
+
   <!-- المحتوى الرئيسي -->
   <div id="mainContent">
-    <!-- تأثير بارالاكس -->
     <div class="parallax"></div>
-
+    
     <!-- واجهة المستخدم -->
     <div class="ui-container" id="uiContainer">
       <div class="logo">UgIX <span>+ TrollX</span></div>
@@ -251,10 +283,7 @@
       <!-- أزرار التحميل -->
       <button class="downloadBtn" onclick="startDownload('delta-ios')">تنزيل Delta للايفون</button>
       <button class="downloadBtn" onclick="startDownload('delta-android')">تنزيل دلتا للاندرويد</button>
-      <button class="downloadBtn" onclick="window.open('https://youtube.com/@troll.x40_40?si=CAqmf5tz2zFqlFbv', '_blank')">حقوقي على اليوتيوب</button>
-
-      <!-- صندوق الإشعار -->
-      <div id="popup">جارٍ بدء التحميل...</div>
+      <button class="downloadBtn" onclick="window.open('https://youtube.com/@troll.x40_40?si=CAqmf5tz2zFqlFbv', '_blank')">حقوق TrollX يوتيوب</button>
 
       <!-- روابط التواصل -->
       <div class="social">
@@ -270,7 +299,7 @@
     const soundEntrance = new Audio("https://YOUR_HOST/ugix_entrance.mp3");
     const soundDownload = new Audio("https://YOUR_HOST/subscribe_voice.mp3");
 
-    // روابط التنزيل
+    // روابط التنزيل المشفرة
     const encryptedLinks = {
       "delta-ios": btoa("itms-services://?action=download-manifest&url=https://deltaios-executor.com/Install1.plist"),
       "delta-android": btoa("https://www.mediafire.com/file_premium/mie033f76povc7j/Delta-665.684-01.apk/file")
@@ -286,11 +315,35 @@
     }
 
     function startDownload(app) {
+      // تأثير التموج
+      const ripple = document.createElement('div');
+      ripple.classList.add('ripple');
+      ripple.style.left = event.clientX + 'px';
+      ripple.style.top = event.clientY + 'px';
+      document.body.appendChild(ripple);
+      
+      // عرض الصورة
+      const popup = document.getElementById('downloadPopup');
       soundDownload.play();
-      const popup = document.getElementById("popup");
-      popup.style.display = "block";
+      
+      gsap.to(popup, {
+        duration: 0.8,
+        opacity: 1,
+        visibility: 'visible',
+        ease: 'power4.out'
+      });
+      
+      // إخفاء الصورة بعد 3 ثواني
       setTimeout(() => {
-        popup.style.display = "none";
+        gsap.to(popup, {
+          duration: 0.5,
+          opacity: 0,
+          visibility: 'hidden'
+        });
+      }, 3000);
+
+      // متابعة التنزيل
+      setTimeout(() => {
         const realLink = decodeBase64(encryptedLinks[app]);
         if(realLink) {
           window.location.href = realLink;
@@ -318,9 +371,11 @@
       const geometry = new THREE.IcosahedronGeometry(4, 5);
       const material = new THREE.MeshPhongMaterial({
         color: 0xffffff,
-        emissive: 0x444444,
-        shininess: 100,
-        wireframe: true
+        emissive: 0x00ffff,
+        shininess: 150,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.8
       });
       
       sphere = new THREE.Mesh(geometry, material);
@@ -337,13 +392,13 @@
       camera.position.z = 8;
 
       // Animation
-      function animate() {
-        requestAnimationFrame(animate);
-        sphere.rotation.x += 0.003;
-        sphere.rotation.y += 0.002;
-        renderer.render(scene, camera);
-      }
-      animate();
+      gsap.to(sphere.rotation, {
+        duration: 10,
+        x: Math.PI * 2,
+        y: Math.PI * 2,
+        repeat: -1,
+        ease: "none"
+      });
     }
 
     // Event Listeners
@@ -370,7 +425,9 @@
         duration: 1.5,
         y: -100,
         opacity: 0,
-        ease: "elastic.out(1, 0.5)"
+        rotate: -5,
+        ease: "elastic.out(1, 0.5)",
+        stagger: 0.1
       });
     });
 
@@ -384,18 +441,6 @@
         ease: "power2.out"
       });
     });
-
-    // تعليقات إضافية لزيادة عدد الأسطر
-    // ==========================================
-    // نظام الحماية المتقدم
-    // جميع الحقوق محفوظة لـ UgIX + TrollX
-    // التصميم والتطوير بواسطة فريق TrollX
-    // إصدار 2.0 - 2024
-    // ==========================================
-    // تعليق إضافي 1
-    // تعليق إضافي 2
-    // تعليق إضافي 3
-    // ... (40 تعليق إضافي)
   </script>
 </body>
 </html>
