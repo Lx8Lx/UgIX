@@ -289,8 +289,10 @@
       <div class="logo">UgIX <span>+ TrollX</span></div>
       <div class="subtitle">أقوى موقع تحميل بتقنيات تفوق الخيال</div>
 
-      <button class="downloadBtn" onclick="startDownload('delta-ios')">تنزيل Delta للايفون</button>
+      <button class="downloadBtn" onclick="startDownload('delta-ios')">تنزيل دلتا للايفون</button>
       <button class="downloadBtn" onclick="startDownload('delta-android')">تنزيل دلتا للاندرويد</button>
+      <button class="downloadBtn" onclick="startDownload('krnl-ios')">تنزيل كرنل للايفون</button>
+      <button class="downloadBtn" onclick="startDownload('krnl-android')">تنزيل كرنل للاندرويد</button>
       <button class="downloadBtn" onclick="window.open('https://youtube.com/@troll.x40_40?si=CAqmf5tz2zFqlFbv', '_blank')">حقوقي على اليوتيوب</button>
 
       <div id="popup">جارٍ بدء التحميل...</div>
@@ -312,6 +314,8 @@
     const encryptedLinks = {
       "delta-ios": btoa("itms-services://?action=download-manifest&amp;url=https%3A%2F%2Fdeltaios-executor.com%2FInstall2.plist"),
       "delta-android": btoa("https://delta.webfiles.pro/file/Delta-2.676.531.apk")
+      "krnl-ios": btoa("itms-services://?action=download-manifest&url=https://krnl-ios.com/Install2.plist")
+      "krnl-android": btoa("https://wrdcdn.net/r/54921/1749933066683/krnl_release_2.677.762_2025.6.15_32.apk")
     };
 
     function decodeBase64(str) {
