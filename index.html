@@ -271,19 +271,15 @@
 
   <div id="mainContent">
     <div class="parallax"></div>
-    
     <div class="ui-container" id="uiContainer">
       <div class="logo">UgIX <span>+ TrollX</span></div>
       <div class="subtitle">أقوى موقع تحميل بتقنيات تفوق الخيال</div>
-
       <button class="downloadBtn" onclick="startDownload('delta-ios')">تنزيل دلتا للايفون</button>
       <button class="downloadBtn" onclick="startDownload('delta-android')">تنزيل دلتا للاندرويد</button>
       <button class="downloadBtn" onclick="startDownload('krnl-ios')">تنزيل كرنل للايفون</button>
       <button class="downloadBtn" onclick="startDownload('krnl-android')">تنزيل كرنل للاندرويد</button>
       <button class="downloadBtn" onclick="window.open('https://youtube.com/@troll.x40_40?si=CAqmf5tz2zFqlFbv', '_blank')">حقوقي على اليوتيوب</button>
-
       <div id="popup">جارٍ بدء التحميل...</div>
-
       <div class="social">
         <p>المطورين: <strong>UgIX + TrollX</strong></p>
         <a href="https://t.me/po_ff" target="_blank">قناة التيليجرام الرسمية</a>
@@ -293,7 +289,6 @@
   </div>
 
   <script>
-    // تم تعطيل الصوت مؤقتًا
     const soundEntrance = { play: () => {} };
     const soundDownload = { play: () => {} };
 
@@ -333,10 +328,8 @@
         alpha: true,
         antialias: true
       });
-
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
-
       const geometry = new THREE.IcosahedronGeometry(4, 5);
       const material = new THREE.MeshStandardMaterial({
         color: 0xffffff,
@@ -345,19 +338,14 @@
         emissive: 0x555555,
         wireframe: true
       });
-
       sphere = new THREE.Mesh(geometry, material);
       scene.add(sphere);
-
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
       scene.add(ambientLight);
-
       const pointLight = new THREE.PointLight(0xffffff, 1.5);
       pointLight.position.set(10, 10, 10);
       scene.add(pointLight);
-
       camera.position.z = 8;
-
       function animate() {
         requestAnimationFrame(animate);
         sphere.rotation.x += 0.003;
@@ -388,16 +376,13 @@
         opacity: 0,
         onComplete: () => preloader.style.display = "none"
       });
-
       mainContent.style.display = "block";
-
       gsap.to(".ui-container", {
         duration: 1.5,
         opacity: 1,
         rotateY: 0,
         ease: "power4.out"
       });
-
       gsap.to(".downloadBtn", {
         stagger: 0.2,
         x: 0,
