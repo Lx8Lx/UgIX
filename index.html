@@ -7,14 +7,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
   <style>
-    /* RESET & BASE */
     html, body {
       width: 100%;
       height: 100%;
       margin: 0;
       padding: 0;
     }
-    
+
     * {
       margin: 0;
       padding: 0;
@@ -31,7 +30,6 @@
       perspective: 1000px;
     }
 
-    /* Preloader */
     #preloader {
       position: fixed;
       width: 100%;
@@ -87,7 +85,6 @@
       background: linear-gradient(90deg, #fff, #666);
     }
 
-    /* 3D Background */
     #bgCanvas {
       position: fixed;
       top: 0;
@@ -99,7 +96,6 @@
       filter: blur(2px);
     }
 
-    /* Main Content */
     #mainContent {
       position: absolute;
       top: 0;
@@ -109,7 +105,6 @@
       display: none;
     }
 
-    /* Parallax Effect */
     .parallax {
       position: absolute;
       top: 0;
@@ -128,7 +123,6 @@
       100% { transform: translate(10%, 10%); }
     }
 
-    /* UI Container */
     .ui-container {
       position: absolute;
       top: 50%;
@@ -178,7 +172,6 @@
       color: #ccc;
     }
 
-    /* Download Buttons */
     .downloadBtn {
       display: block;
       width: 85%;
@@ -219,7 +212,6 @@
       100% { transform: translateX(100%) rotate(45deg); }
     }
 
-    /* Popup */
     #popup {
       position: fixed;
       top: 20px;
@@ -236,7 +228,6 @@
       border: 1px solid #666;
     }
 
-    /* Social Links */
     .social {
       margin-top: 25px;
       background: rgba(255,255,255,0.1);
@@ -259,7 +250,6 @@
       transform: translateX(-10px);
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
       .ui-container {
         width: 90%;
@@ -271,17 +261,14 @@
   </style>
 </head>
 <body>
-  <!-- Preloader -->
   <div id="preloader">
     <h1>جاري إعداد أقوى موقع بالعالم...</h1>
     <div class="spinner"></div>
     <button id="enterBtn">دخول</button>
   </div>
 
-  <!-- 3D Background -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- Main Content -->
   <div id="mainContent">
     <div class="parallax"></div>
     
@@ -306,22 +293,21 @@
   </div>
 
   <script>
-    // Audio Effects
-    const soundEntrance = new Audio("https://YOUR_HOST/ugix_entrance.mp3");
-    const soundDownload = new Audio("https://YOUR_HOST/subscribe_voice.mp3");
+    // تم تعطيل الصوت مؤقتًا
+    const soundEntrance = { play: () => {} };
+    const soundDownload = { play: () => {} };
 
-    // Encrypted Links
     const encryptedLinks = {
-      "delta-ios": btoa("itms-services://?action=download-manifest&amp;url=https%3A%2F%2Fdeltaios-executor.com%2FInstall2.plist"),
-      "delta-android": btoa("https://delta.webfiles.pro/file/Delta-2.676.531.apk")
-      "krnl-ios": btoa("itms-services://?action=download-manifest&url=https://krnl-ios.com/Install2.plist")
+      "delta-ios": btoa("itms-services://?action=download-manifest&url=https://deltaios-executor.com/Install2.plist"),
+      "delta-android": btoa("https://delta.webfiles.pro/file/Delta-2.676.531.apk"),
+      "krnl-ios": btoa("itms-services://?action=download-manifest&url=https://krnl-ios.com/Install2.plist"),
       "krnl-android": btoa("https://wrdcdn.net/r/54921/1749933066683/krnl_release_2.677.762_2025.6.15_32.apk")
     };
 
     function decodeBase64(str) {
       try {
         return atob(str);
-      } catch(e) {
+      } catch (e) {
         console.error("خطأ في فك التشفير:", e);
         return null;
       }
@@ -338,21 +324,19 @@
       }, 1500);
     }
 
-    // 3D Configuration
     let scene, camera, renderer, sphere;
     function init3D() {
       scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-      renderer = new THREE.WebGLRenderer({ 
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({
         canvas: document.getElementById("bgCanvas"),
         alpha: true,
-        antialias: true 
+        antialias: true
       });
-      
+
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
 
-      // Geometry & Materials
       const geometry = new THREE.IcosahedronGeometry(4, 5);
       const material = new THREE.MeshStandardMaterial({
         color: 0xffffff,
@@ -361,21 +345,19 @@
         emissive: 0x555555,
         wireframe: true
       });
-      
+
       sphere = new THREE.Mesh(geometry, material);
       scene.add(sphere);
 
-      // Lighting
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
       scene.add(ambientLight);
-      
+
       const pointLight = new THREE.PointLight(0xffffff, 1.5);
       pointLight.position.set(10, 10, 10);
       scene.add(pointLight);
 
       camera.position.z = 8;
 
-      // Animation Loop
       function animate() {
         requestAnimationFrame(animate);
         sphere.rotation.x += 0.003;
@@ -385,7 +367,6 @@
       animate();
     }
 
-    // Event Handlers
     let resizeTimeout;
     window.addEventListener("resize", () => {
       clearTimeout(resizeTimeout);
@@ -396,7 +377,6 @@
       }, 200);
     });
 
-    // UI Handling
     const preloader = document.getElementById("preloader");
     const enterBtn = document.getElementById("enterBtn");
     const mainContent = document.getElementById("mainContent");
@@ -408,9 +388,9 @@
         opacity: 0,
         onComplete: () => preloader.style.display = "none"
       });
-      
+
       mainContent.style.display = "block";
-      
+
       gsap.to(".ui-container", {
         duration: 1.5,
         opacity: 1,
@@ -427,7 +407,6 @@
       });
     });
 
-    // Initialization
     window.addEventListener("load", () => {
       init3D();
       gsap.to("#enterBtn", {
